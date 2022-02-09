@@ -7,3 +7,5 @@ sudo apt install libxml2-dev libpam0g-dev libudisks2-dev libglib2.0-dev gir1.2-u
 sudo apt-get install devscripts
 
 sudo apt-get install gawk
+
+sudo apt-get install udisks2
