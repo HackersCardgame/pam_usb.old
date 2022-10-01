@@ -21,17 +21,20 @@
 #include <regex.h>
 #include "log.h"
 #include "process.h"
+#include "mem.h"
 
 char *pusb_tmux_get_client_tty(pid_t env_pid)
 {
     char *tmux_details = getenv("TMUX");
-    if (tmux_details == NULL) {
+    if (tmux_details == NULL) 
+    {
         log_debug("		No TMUX env var, checking parent process in case this is a sudo request\n");
 
-        tmux_details = (char *)malloc(BUFSIZ);
+        tmux_details = (char *)xmalloc(BUFSIZ);
         tmux_details = pusb_get_process_envvar(env_pid, "TMUX");
 
-        if (tmux_details == NULL) {
+        if (tmux_details == NULL) 
+        {
             return NULL;
         }
     }
@@ -44,28 +47,33 @@ char *pusb_tmux_get_client_tty(pid_t env_pid)
     log_debug("		Got tmux_socket_path: %s\n", tmux_socket_path);
 
     char get_tmux_session_details_cmd[64];
-    sprintf(get_tmux_session_details_cmd, "tmux -S %s list-clients -t \\$%s", tmux_socket_path, tmux_client_id);
+    sprintf(get_tmux_session_details_cmd, "tmux -S \"%s\" list-clients -t \"\\$%s\"", tmux_socket_path, tmux_client_id);
     log_debug("		Built get_tmux_session_details_cmd: %s\n", get_tmux_session_details_cmd);
 
     char buf[BUFSIZ];
     FILE *fp;
-    if ((fp = popen(get_tmux_session_details_cmd, "r")) == NULL) {
+    if ((fp = popen(get_tmux_session_details_cmd, "r")) == NULL) 
+    {
         log_error("tmux detected, but couldn't get session details. Denying since remote check impossible without it!\n");
         return (0);
     }
 
     char *tmux_client_tty = NULL;
-    if (fgets(buf, BUFSIZ, fp) != NULL) {
+    if (fgets(buf, BUFSIZ, fp) != NULL) 
+    {
         tmux_client_tty = strtok(buf, ":");
-        tmux_client_tty += strlen("/dev/");
+        tmux_client_tty += 5; // cut "/dev/"
         log_debug("		Got tmux_client_tty: %s\n", tmux_client_tty);
 
-        if (pclose(fp)) {
+        if (pclose(fp)) 
+        {
             log_debug("		Closing pipe for 'tmux list-clients' failed, this is quite a wtf...\n");
         }
 
         return tmux_client_tty;
-    } else {
+    } 
+    else 
+    {
         log_error("tmux detected, but couldn't get client details. Denying since remote check impossible without it!\n");
         return (0);
     }
@@ -85,35 +93,41 @@ int pusb_tmux_has_remote_clients(const char* username)
     char buf[BUFSIZ];
     char msgbuf[100];
     char regex_tpl[2][BUFSIZ] = {
-        "(.+)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})(.+)tmux(.+)(a|at|attach|new)", //v4
-        "(.+)([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4})(.+)tmux(.+)(a|at|attach|new)" // v6
+        "(.+)([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})(.+)tmux(.+)", //v4
+        "(.+)([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4}):([0-9A-Fa-f]{1,4})(.+)tmux(.+)" // v6
     }; // ... yes, these allow invalid addresses. No, I don't care. This isn't about validation but detecting remote access. Good enough ¯\_(ツ)_/¯
 
-    for (int i = 0; i <= 1; i++) {
+    for (int i = 0; i <= 1; i++) 
+    {
         log_debug("		Checking for IPv%d connections...\n", (4 + (i * 2)));
 
-        if ((fp = popen("w", "r")) == NULL) {
+        if ((fp = popen("w", "r")) == NULL) 
+        {
             log_error("tmux detected, but couldn't get `w`. Denying since remote check for tmux impossible without it!\n");
             return (-1);
         }
 
-        while (fgets(buf, BUFSIZ, fp) != NULL) {
+        while (fgets(buf, BUFSIZ, fp) != NULL) 
+        {
             sprintf(regex_raw, "%s%s", username, regex_tpl[i]);
 
             status = regcomp(&regex, regex_raw, REG_EXTENDED);
-            if (status) {
+            if (status) 
+            {
                 log_debug("		Couldn't compile regex!\n");
                 regfree(&regex);
                 return (-1);
             }
 
             status = regexec(&regex, buf, 0, NULL, 0);
-            if (!status) {
+            if (!status) 
+            {
                 log_error("tmux detected and at least one remote client is connected to the session, denying!\n");
                 regfree(&regex);
                 return 1;
             }
-            else if (status != REG_NOMATCH) {
+            else if (status != REG_NOMATCH) 
+            {
                 regerror(status, &regex, msgbuf, sizeof(msgbuf));
                 log_debug("		Regex match failed: %s\n", msgbuf);
                 regfree(&regex);
@@ -123,7 +137,8 @@ int pusb_tmux_has_remote_clients(const char* username)
             regfree(&regex);
         }
 
-        if (pclose(fp)) {
+        if (pclose(fp)) 
+        {
             log_debug("		Closing pipe for 'w' failed, this is quite a wtf...\n");
         }
     }

@@ -1,0 +1,23 @@
+# Warning about XDMCP
+
+You should under no circumstances enable pamusb and XDMCP at the same time. Most graphical login managers are whitelisted and will not be checked for "remoteness" since issue #51 was fixed. This means if you enable XDMCP and have a usb device for an already configured user attached anyone connecting to your X-Server could login as that user!
+
+I repeat, UNDER NO CIRCUMSTANCES ENABLE PAMUSB AND XDMCP AT THE SAME TIME! Don't say you haven't be warned if someone "hacks" your system because of this.
+
+Note: you shouldn't use XDMCP these days anyway... 
+
+# Warning about remote access (SSH etc)
+
+In the past there have been ways to circumvent the local check (see issue [#51](https://github.com/mcdope/pam_usb/issues/51) and also the "[cup of tee](https://github.com/mcdope/pam_usb/issues/39)"). I'm confident that all known ways are fixed now. 
+
+But I need to underline "known"... I'm no security expert and it's very well possible that there are still ways to circumvent the checks. 
+
+Kudos to [@Fuseteam](https://github.com/Fuseteam) for extensive testing, breaking and reporting.
+
+# Warning about the ability to unlock the GNOME keyring
+
+If you use the ability to auto-unlock your keyring while using pam_usb you are exposing your keyring password to everyone being able to access the file containing it. 
+
+This means at least root (and users able to use sudo) can read your keyring password in cleartext. If you use the SAMBA feature to share your home directory you will also expose it to everyone allowed to access that share. 
+
+For most users this isn't an issue. But if you're sharing your machine with other users, or use it in a network, you should for sure keep it in mind.

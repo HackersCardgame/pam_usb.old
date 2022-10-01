@@ -1,29 +1,32 @@
-![Build](https://github.com/mcdope/pam_usb/workflows/Can%20be%20built%20successfully/badge.svg) ![Debian packaging](https://github.com/mcdope/pam_usb/workflows/Can%20be%20packaged%20successfully/badge.svg) ![Functional testing](https://github.com/mcdope/pam_usb/workflows/Build%20&%20test%20on%20own%20server/badge.svg)
+![Build](https://github.com/mcdope/pam_usb/workflows/Can%20be%20built%20successfully/badge.svg) ![Packaging](https://github.com/mcdope/pam_usb/workflows/Packaging%20(deb,%20rpm,%20zst)/badge.svg) ![Functional testing](https://github.com/mcdope/pam_usb/workflows/Build%20&%20test/badge.svg) ![CodeQL](https://github.com/mcdope/pam_usb/workflows/CodeQL/badge.svg) ![DevSkim](https://github.com/mcdope/pam_usb/workflows/DevSkim/badge.svg) ![Nightly builds (tar.gz, deb, rpm, zst)](https://github.com/mcdope/pam_usb/actions/workflows/nightly-build-on-own-server.yml/badge.svg)
+
 
 pam\_usb
 ========
 
-pam\_usb provides hardware authentication for Linux using ordinary USB Flash Drives.
+pam\_usb provides hardware authentication for Linux using ordinary removable media. Tested are flash sticks and storage cards, but it should work with harddrives, SSDs and even floppies (at least USB based) too.
 
 It works with any application supporting PAM, such as _su_ and login managers (_GDM_, _KDM_).
 
 Features
 --------
 
-* `Password-less authentication.` Use your USB stick for authentication, don't type passwords anymore.
+* `Password-less authentication.` Use your removable media for authentication, don't type passwords anymore (or add a second factor).
 * `Device auto probing.` You don't need to mount the device, or even to configure the device location (_sda1_, _sdb1_, etc). pam\_usb.so will automatically locate the device using `UDisks` and access its data by itself.
-* `Two-factor authentication.` Achieve greater security by requiring both the USB stick and the password to authenticate the user.
+* `Two-factor authentication.` Archive greater security by requiring both the removable media and the password to authenticate the user.
 * `Non-intrusive.` pam\_usb doesn't require any modifications of the USB storage device to work (no additional partitions required).
 * USB Serial number, model and vendor verification.
 * Support for **One Time Pads** authentication.
 * You can use the same device across multiple machines.
 * Support for all kind of removable devices (SD, MMC, etc).
+* Can optionally unlock your GNOME keyring
 
 Tools
 -----
 * `pamusb-agent`: trigger actions (such as locking the screen) upon device authentication and removal.
 * `pamusb-conf`: configuration helper.
 * `pamusb-check`: integrate pam\_usb's authentication engine within your scripts or applications.
+* `pamusb-keyring-unlock-gnome`: utility to unlock the gnome-keyring on login with pam_usb
 
 Getting Started
 ----------------
@@ -50,5 +53,5 @@ This repo is mainly based on community improvements from
 See the commit history for details. You can find a list of all contributors in the `AUTHORS` file. 
 
 The last official release was 0.5.0 btw, some private packages used 0.6.0 to override the upstream provided 
-version but those varied in changes from 0.5.0. This repo will be released starting from 0.7.0 when ready
-and includes all updates I'm aware of (Python3 port, UDisks2 support, other smaller ones) or did myself.
+version but those varied in changes from 0.5.0. This repo started at 0.7.0 and includes all contributions up
+to this point I'm aware of (Python3 port, UDisks2 support, other smaller ones) or did myself.

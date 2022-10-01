@@ -1,3 +1,33 @@
+libpam-usb (0.8.3-1) unstable; urgency=medium
+  * [Bugfix] Fix pam-auth-update config not being included in package
+
+ -- Tobias Bäumer <tobiasbaeumer@gmail.com>  Mon, 05 Sep 2022 21:00:00 +0200
+
+
+libpam-usb (0.8.3) unstable; urgency=medium
+  * [Feature] pamusb-conf now has a --reset-pads=username option
+  * [Bugfix] Fix debconf issues with devices having no revision set
+  * [Bugfix] Fix RHOST check triggering on empty value
+  * [Bugfix] Whitelist pamusb-agent for remoteness-check
+  * [Bugfix] Fix "tty from displayserver" remoteness-check method
+  * [Docs] Update manpages and text files
+  * [Bugfix] Fix some usages of tmux being able to circumvent localcheck
+
+ -- Tobias Bäumer <tobiasbaeumer@gmail.com>  Tue, 30 Aug 2022 21:00:00 +0200
+
+libpam-usb (0.8.2) unstable; urgency=medium
+  * [Tools/Docs] Add pamusb-keyring-unlock-gnome, to allow unlocking the
+  GNOME keyring (#11)
+  * [Bugfix] Whitelist "login" service name to prevent insta-logout on
+  TTY shells (#115)
+  * [Bugfix] Check PAM_RHOST if deny_remote is enable to fix vsftpd auth
+  breaking down (#100)
+  * [Bugfix] Fix type for argument to stat (community contribution)
+  * [Docs] Added code of conduct (#106) and updated AUTHORS
+  * [Makefile] Fix LIBDIR on non-debian systems
+
+ -- Tobias Bäumer <tobiasbaeumer@gmail.com>  Sun, 15 May 2022 21:00:00 +0200
+
 libpam-usb (0.8.1) unstable; urgency=medium
   * [CI] Fixed "build & test on own server" job
   * [Enhancement] Fix obtaining tty by DISPLAY if DISPLAY contains a screen 

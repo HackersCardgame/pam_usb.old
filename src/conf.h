@@ -16,20 +16,23 @@
  */
 
 #ifndef PUSB_CONF_H_
-# define PUSB_CONF_H_
-# define PUSB_CONF_FILE "/etc/security/pam_usb.conf"
-# define CONF_DEVICE_XPATH "//configuration/devices/device[@id='%s']/%s"
-# define CONF_USER_XPATH "//configuration/users/user[@id='%s']/%s"
-# define CONF_SERVICE_XPATH "//configuration/services/service[@id='%s']/%s"
-# define CONF_USER_MAXLEN 32
-# include <limits.h>
+#define PUSB_CONF_H_
+#define PUSB_CONF_FILE "/etc/security/pam_usb.conf"
+#define CONF_DEVICE_XPATH "//configuration/devices/device[@id='%s']/%s"
+#define CONF_USER_XPATH "//configuration/users/user[@id='%s']/%s"
+#define CONF_SERVICE_XPATH "//configuration/services/service[@id='%s']/%s"
+#define CONF_USER_MAXLEN 32
+
+#include <limits.h>
 #ifdef __linux__
-# include <linux/limits.h>
+#include <linux/limits.h>
 #endif
-# include <sys/time.h>
-# ifndef PATH_MAX
-#  define PATH_MAX 4096
-# endif
+#include <sys/utsname.h>
+#include <sys/time.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
 
 typedef struct	pusb_device
 {
@@ -50,7 +53,7 @@ typedef struct		pusb_options
 	int				one_time_pad;
 	time_t			pad_expiration;
 	int				deny_remote;
-	char			hostname[64];
+	char			hostname[_UTSNAME_NODENAME_LENGTH];
 	char			system_pad_directory[PATH_MAX];
 	char			device_pad_directory[PATH_MAX];
 	t_pusb_device	device;
